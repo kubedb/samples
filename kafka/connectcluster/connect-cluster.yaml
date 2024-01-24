@@ -1,0 +1,18 @@
+apiVersion: kafka.kubedb.com/v1alpha1
+kind: ConnectCluster
+metadata:
+  name: connect-cluster
+  namespace: demo
+spec:
+  version: 3.6.0
+  connectorPlugins:
+    - gcs-0.13.0
+    - mongodb-1.11.0
+    - mysql-2.4.2.final
+    - postgres-2.4.2.final
+    - s3-2.15.0
+  kafkaRef:
+    name: kafka-prod
+    namespace: demo
+  replicas: 2
+  terminationPolicy: WipeOut
