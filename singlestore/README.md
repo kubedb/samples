@@ -2,7 +2,7 @@
 ```bash
 kubectl create secret generic -n demo license-secret \
   --from-literal=username=license \
-  --from-literal=password='BGJjOGVjNDBlNmFjZTRhZDViODJmNWI4YmNjY2E0YTM5AAAAAAAAAAAEAAAAAAAAACgwNQIYKYMrNgqNFLwaIVWUzxBtVhtUV/9Tmg4JAhkA/pwwvZ1xVUKVCFIL5Wk1rAUcz20KtaoVAA=='
+  --from-literal=password='******'
 ```
 **To create singlesore standalone-mode object**
 ```bash
