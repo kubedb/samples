@@ -15,3 +15,12 @@ spec:
     storageClassName: standard
   storageType: Durable
   terminationPolicy: WipeOut
+  serviceTemplates:
+  - alias: primary
+    spec:
+      type: LoadBalancer
+      ports:
+      - name: amqp
+        port: 5672
+      - name: http
+        port: 15672
