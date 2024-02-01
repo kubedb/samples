@@ -8,7 +8,7 @@ spec:
   terminationPolicy: Delete
   replicas: 2
   zookeeperRef:
-    name: zookeeper
+    name: zk-cluster
   storage:
     accessModes:
       - ReadWriteOnce

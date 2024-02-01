@@ -7,7 +7,7 @@ spec:
   version: 9.4.1
   terminationPolicy: Delete
   zookeeperRef:
-    name: zookeeper
+    name: zk-cluster
   topology:
     overseer:
       storage:
