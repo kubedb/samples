@@ -1,0 +1,36 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Solr
+metadata:
+  name: solr-cluster
+  namespace: demo
+spec:
+  version: 9.4.1
+  terminationPolicy: Delete
+  zookeeperRef:
+    name: zk-cluster
+  topology:
+    overseer:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
+        storageClassName: standard
+    data:
+      replicas: 1
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+        storageClassName: standard
+    coordinator:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
+        storageClassName: standard
