@@ -1,18 +1,51 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Singlestore
 metadata:
-  name: singlestore-standalone
-  namespace: demo
+  name: standalone
+  namespace: sdb
 spec:
   version: "8.1.32"
   licenseSecret:
     name: license-secret
   storageType: Durable
   storage:
-    storageClassName: "standard"
+    storageClassName: "standard-rwo"
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
         storage: 10Gi
   terminationPolicy: WipeOut
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: sdb
+        component: sdb-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: sdb
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: sdb-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      containers:
+      - name: singlestore
+        resources:
+          requests:
+            "cpu": 400m
+            "memory": "1200Mi"
+  serviceTemplates:
+  - alias: primary
+    spec:
+      type: LoadBalancer

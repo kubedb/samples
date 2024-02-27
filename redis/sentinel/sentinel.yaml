@@ -10,10 +10,31 @@ spec:
   storageType: Durable
   podTemplate:
     spec:
+      nodeSelector:
+        app: kubedb
+        instance: sentinel
+        component: sentinel-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: sentinel
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: sentinel-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
       resources:
         requests:
-          cpu: "100m"
-          memory: "100Mi"
+          cpu: "400m"
+          memory: "600Mi"
   storage:
     resources:
       requests:

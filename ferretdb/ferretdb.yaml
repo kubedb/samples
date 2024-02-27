@@ -1,15 +1,43 @@
 apiVersion: kubedb.com/v1alpha2
 kind: FerretDB
 metadata:
-  name: ferretdb-sample
+  name: ferret
   namespace: demo
 spec:
   version: "1.18.0"
   authSecret:
     externallyManaged: false
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: ferretdb
+        component: ferretdb-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: ferretdb
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: ferretdb-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      containers:
+        - name: ferretdb
+          resources:
+            requests:
+              "cpu": 400m
+              "memory": "1200Mi"
   sslMode: disabled
   storage:
-    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
     resources:
@@ -18,3 +46,10 @@ spec:
   backend:
     externallyManaged: false
   terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/builtin
+#    prometheus:
+#      serviceMonitor:
+#        labels:
+#          release: prometheus
+#        interval: 10s

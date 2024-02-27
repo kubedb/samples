@@ -1,32 +1,71 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Singlestore
 metadata:
-  name: singlestore-sample
-  namespace: demo
+  name: cluster
+  namespace: sdb
 spec:
   version: "8.1.32"
+  licenseSecret:
+    name: license-secret
+  storageType: Durable
   topology:
     aggregator:
+      podTemplate:
+        spec:
+          nodeSelector:
+            app: kubedb
+            instance: sdb
+            component: sdb-database
+          tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: sdb
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: sdb-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
+          containers:
+            - name: singlestore
+              resources:
+                requests:
+                  "cpu": 600m
+                  "memory": "1200Mi"
       replicas: 3
       storage:
-        storageClassName: "standard"
+        storageClassName: "standard-rwo"
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 1Gi
     leaf:
+      podTemplate:
+        spec:
+          containers:
+            - name: singlestore
+              resources:
+                requests:
+                  "cpu": 700m
+                  "memory": "1400Mi"
       replicas: 2
       storage:
-        storageClassName: "standard"
+        storageClassName: "standard-rwo"
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 10Gi
-  licenseSecret:
-    name: license-secret
-  #  authSecret:
-  #    name: given-secret
-  storageType: Durable
   terminationPolicy: Halt
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
