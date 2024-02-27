@@ -1,18 +1,52 @@
 apiVersion: kubedb.com/v1alpha2
 kind: ZooKeeper
 metadata:
-  name: zk-cluster
+  name: zk-com
   namespace: demo
 spec:
   version: "3.7.2"
   replicas: 3
   disableAuth: false
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: zookeeper
+        component: zookeeper-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: zookeeper
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: zookeeper-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      containers:
+      - name: zookeeper
+        resources:
+          requests:
+            "cpu": 700m
+            "memory": "1200Mi"
   storage:
-    resources:
-      requests:
-        storage: "100Mi"
-    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
+    resources:
+      requests:
+        storage: 500Mi
+#    storageClassName: standard-rwo
   terminationPolicy: "WipeOut"
-
+  monitor:
+    agent: prometheus.io/builtin
+  serviceTemplates:
+  - alias: primary
+    spec:
+      type: LoadBalancer

@@ -1,18 +1,47 @@
 apiVersion: kubedb.com/v1alpha2
 kind: RabbitMQ
 metadata:
-  name: rabbit-dev
-  namespace: demo
+  name: rmq
+  namespace: rabbit
 spec:
   version: "3.12.12"
   replicas: 3
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: rabbitmq
+        component: rabbitmq-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: rabbitmq
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: rabbitmq-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      containers:
+        - name: rabbitmq
+          resources:
+            requests:
+              "cpu": 400m
+              "memory": "1200Mi"
   storage:
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
-    storageClassName: standard
+#    storageClassName: standard
   storageType: Durable
   terminationPolicy: WipeOut
   serviceTemplates:
@@ -24,3 +53,9 @@ spec:
         port: 5672
       - name: http
         port: 15672
+  monitor:
+    agent: prometheus.io/builtin
+#    prometheus:
+#     serviceMonitor:
+#       labels:
+#         release: prometheus

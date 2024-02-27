@@ -2,7 +2,7 @@ apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
   name: ha-postgres
-  namespace: demo
+  namespace: pool
 spec:
   terminationPolicy: WipeOut
   configSecret:
@@ -11,7 +11,7 @@ spec:
   replicas: 3
   storageType: Durable
   storage:
-    storageClassName: "standard"
+    storageClassName: "standard-rwo"
     accessModes:
       - ReadWriteOnce
     resources:

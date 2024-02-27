@@ -1,6 +1,6 @@
 **First need to create Singlestore License Secret**
 ```bash
-kubectl create secret generic -n demo license-secret \
+kubectl create secret generic -n sdb license-secret \
   --from-literal=username=license \
   --from-literal=password='******'
 ```
