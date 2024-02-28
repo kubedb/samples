@@ -4,14 +4,46 @@ metadata:
   name: zk-cluster
   namespace: druid
 spec:
-  version: "3.7.2"
+  podTemplate:
+    spec:
+      nodeSelector:
+#        app: kubedb
+        instance: zookeeper
+#        component: zookeeper-database
+      tolerations:
+#        - effect: NoSchedule
+#          key: app
+#          operator: Equal
+#          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: zookeeper
+#        - effect: NoSchedule
+#          key: component
+#          operator: Equal
+#          value: zookeeper-database
+#        - effect: NoSchedule
+#          key: nodepool_type
+#          operator: Equal
+#          value: n2-standard-2
+      containers:
+        - name: zookeeper
+          resources:
+            requests:
+              cpu: 700m
+              memory: "1200Mi"
+  version: 3.8.3
   replicas: 3
-  disableAuth: false
   storage:
     resources:
       requests:
         storage: "100Mi"
-    storageClassName: "standard"
+    #    storageClassName: standard
     accessModes:
       - ReadWriteOnce
-  terminationPolicy: "WipeOut"
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
+  terminationPolicy: WipeOut
