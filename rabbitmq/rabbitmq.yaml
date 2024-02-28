@@ -1,11 +1,22 @@
 apiVersion: kubedb.com/v1alpha2
 kind: RabbitMQ
 metadata:
-  name: rmq
+  name: rabbitmq-prod
   namespace: rabbit
 spec:
   version: "3.12.12"
   replicas: 3
+  # authSecret:
+  #   name: rabbit-user  # reference to a secret containing user (admin) credentials
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+#    storageClassName: standard
+  storageType: Durable
+  terminationPolicy: WipeOut  # DoNotTerminate(blocks deletion), Halt( retains pvc,secret), Delete (retains secret)
   podTemplate:
     spec:
       nodeSelector:
@@ -33,28 +44,17 @@ spec:
         - name: rabbitmq
           resources:
             requests:
-              "cpu": 400m
-              "memory": "1200Mi"
-  storage:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-#    storageClassName: standard
-  storageType: Durable
-  terminationPolicy: WipeOut
+              cpu: "800m"
+              memory: "1.5Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
   serviceTemplates:
-  - alias: primary
-    spec:
-      type: LoadBalancer
-      ports:
-      - name: amqp
-        port: 5672
-      - name: http
-        port: 15672
+    - alias: primary
+      spec:
+        type: LoadBalancer
   monitor:
-    agent: prometheus.io/builtin
+    agent: prometheus.io/builtin  # Or, using helm-prometheus-stack: prometheus.io/operator
 #    prometheus:
 #     serviceMonitor:
 #       labels:

@@ -8,8 +8,14 @@ spec:
   topology:
     mode: GroupReplication
   replicas: 3
+  podTemplate:
+    spec:
+      resources:
+        requests:
+          cpu: 400m
+          memory: 700Mi
   storage:
-    storageClassName: "standard"
+#    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
     resources:

@@ -1,0 +1,128 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Solr
+metadata:
+  name: solr-prod
+  namespace: solr
+spec:
+  version: 9.4.1
+  terminationPolicy: Halt
+  zookeeperRef:
+    name: zookeeper-prod
+    namespace: zookeeper
+  topology:
+    overseer:
+      podTemplate:
+        spec:
+          nodeSelector:
+            app: kubedb
+            instance: solr
+            component: solr-database
+          tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  cpu: 400m
+                  memory: "1600Mi"
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+#        storageClassName: standard
+    data:
+      podTemplate:
+        spec:
+          nodeSelector:
+            app: kubedb
+            instance: solr
+            component: solr-database
+          tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  "cpu": 500m
+                  "memory": "1600Mi"
+      replicas: 1
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+#        storageClassName: standard
+    coordinator:
+      podTemplate:
+        spec:
+          nodeSelector:
+            app: kubedb
+            instance: solr
+            component: solr-database
+          tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  "cpu": 500m
+                  "memory": "1600Mi"
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 700Mi
+#        storageClassName: standard
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer

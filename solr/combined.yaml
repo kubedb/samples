@@ -1,15 +1,28 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: Solr
 metadata:
-  name: zookeeper-prod
-  namespace: zookeeper
+  name: solr-dev
+  namespace: solr
 spec:
+  version: 9.4.1
+  terminationPolicy: Halt
+  replicas: 3
+  zookeeperRef:
+    name: zookeeper-prod
+    namespace: zookeeper
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 3Gi
+#    storageClassName: standard
   podTemplate:
     spec:
       nodeSelector:
         app: kubedb
-        instance: zookeeper
-        component: zookeeper-database
+        instance: solr
+        component: solr-database
       tolerations:
         - effect: NoSchedule
           key: app
@@ -18,32 +31,18 @@ spec:
         - effect: NoSchedule
           key: instance
           operator: Equal
-          value: zookeeper
+          value: solr
         - effect: NoSchedule
           key: component
           operator: Equal
-          value: zookeeper-database
+          value: solr-database
         - effect: NoSchedule
           key: nodepool_type
           operator: Equal
           value: n2-standard-2
       containers:
-        - name: zookeeper
+        - name: solr
           resources:
             requests:
-              cpu: 700m
-              memory: "1200Mi"
-  version: 3.8.3
-  replicas: 3
-  storage:
-    resources:
-      requests:
-        storage: "100Mi"
-#    storageClassName: standard
-    accessModes:
-      - ReadWriteOnce
-  serviceTemplates:
-    - alias: primary
-      spec:
-        type: LoadBalancer
-  terminationPolicy: Halt
+              cpu: 500m
+              memory: "1600Mi"

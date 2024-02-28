@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: s3-sink-config
+  namespace: demo
+stringData:
+  config.properties: |
+    connector.class=io.aiven.kafka.connect.s3.AivenKafkaConnectS3SinkConnector
+    tasks.max=1
+    key.converter=org.apache.kafka.connect.storage.StringConverter
+    value.converter=org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable=false
+    format.output.type=jsonl
+    topics=<topics-to-sink>
+    aws.access.key.id=<aws-access-key>
+    aws.secret.access.key=<secret-key>
+    aws.s3.region=ap-south-1
+    aws.s3.endpoint=ap-south-1.linodeobjects.com
+    file.name.template=S3/{{topic}}-{{partition:padding=true}}-{{start_offset:padding=true}}.gz
+    aws.s3.bucket.name=<bucket-name>
+    format.output.fields=key,value,offset,timestamp
+    format.output.envelope=true
+    file.compression.type=gzip
+    timestamp.timezone=Europe/Berlin
+    timestamp.source=wallclock
+---
+apiVersion: kafka.kubedb.com/v1alpha1
+kind: Connector
+metadata:
+  name: s3-sink-connector
+  namespace: demo
+spec:
+  configSecret:
+    name: s3-sink-config
+  connectClusterRef:
+    name: connect-cluster
+    namespace: demo
+  terminationPolicy: WipeOut
