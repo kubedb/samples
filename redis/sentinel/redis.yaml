@@ -16,15 +16,14 @@ spec:
     resources:
       requests:
         storage: 10Gi
-    storageClassName: "default"
     accessModes:
       - ReadWriteOnce
   podTemplate:
     spec:
       nodeSelector:
         app: kubedb
-        instance: sentinel
-        component: sentinel-database
+        instance: redis
+        component: redis-database
       tolerations:
         - effect: NoSchedule
           key: app
@@ -33,11 +32,11 @@ spec:
         - effect: NoSchedule
           key: instance
           operator: Equal
-          value: sentinel
+          value: redis
         - effect: NoSchedule
           key: component
           operator: Equal
-          value: sentinel-database
+          value: redis-database
         - effect: NoSchedule
           key: nodepool_type
           operator: Equal
