@@ -1,60 +1,46 @@
 apiVersion: kubedb.com/v1alpha2
 kind: RabbitMQ
 metadata:
-  name: rmq
+  name: rabbitmq-prod
   namespace: rabbit
 spec:
   version: "3.12.12"
   replicas: 3
-  podTemplate:
-    spec:
-      nodeSelector:
-        app: kubedb
-        instance: rabbitmq
-        component: rabbitmq-database
-      tolerations:
-        - effect: NoSchedule
-          key: app
-          operator: Equal
-          value: kubedb
-        - effect: NoSchedule
-          key: instance
-          operator: Equal
-          value: rabbitmq
-        - effect: NoSchedule
-          key: component
-          operator: Equal
-          value: rabbitmq-database
-        - effect: NoSchedule
-          key: nodepool_type
-          operator: Equal
-          value: n2-standard-2
-      containers:
-        - name: rabbitmq
-          resources:
-            requests:
-              "cpu": 400m
-              "memory": "1200Mi"
+  # authSecret:
+  #   name: rabbit-user  # reference to a secret containing user (admin) credentials
   storage:
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
-#    storageClassName: standard
+    storageClassName: standard-rwo
   storageType: Durable
-  terminationPolicy: WipeOut
-  serviceTemplates:
-  - alias: primary
+  terminationPolicy: WipeOut  # DoNotTerminate(blocks deletion), Halt( retains pvc,secret), Delete (retains secret)
+  podTemplate:
     spec:
-      type: LoadBalancer
-      ports:
-      - name: amqp
-        port: 5672
-      - name: http
-        port: 15672
+      nodeSelector:
+        instance: rabbitmq
+      tolerations:
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: rabbitmq
+      containers:
+        - name: rabbitmq
+          resources:
+            requests:
+              cpu: "800m"
+              memory: "1.5Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
   monitor:
-    agent: prometheus.io/builtin
+    agent: prometheus.io/builtin  # Or, using helm-prometheus-stack: prometheus.io/operator
 #    prometheus:
 #     serviceMonitor:
 #       labels:

@@ -1,0 +1,86 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Solr
+metadata:
+  name: solr-prod
+  namespace: solr
+spec:
+  version: 9.4.1
+  terminationPolicy: Halt
+  zookeeperRef:
+    name: zookeeper-prod
+    namespace: zookeeper
+  topology:
+    overseer:
+      podTemplate:
+        spec:
+          nodeSelector:
+            instance: solr
+          tolerations:
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  cpu: 400m
+                  memory: "1600Mi"
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+        storageClassName: standard-rwo
+    data:
+      podTemplate:
+        spec:
+          nodeSelector:
+            instance: solr
+          tolerations:
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  "cpu": 500m
+                  "memory": "1600Mi"
+      replicas: 1
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+        storageClassName: standard-rwo
+    coordinator:
+      podTemplate:
+        spec:
+          nodeSelector:
+            instance: solr
+          tolerations:
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: solr
+          containers:
+            - name: solr
+              resources:
+                requests:
+                  "cpu": 500m
+                  "memory": "1600Mi"
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 700Mi
+        storageClassName: standard-rwo
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
