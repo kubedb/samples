@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-source-config
+  namespace: demo
+stringData:
+  config.properties: |
+    connector.class=io.debezium.connector.postgresql.PostgresConnector
+    plugin.name=pgoutput
+    database.hostname=<pg-hostname>
+    database.port=<pg-port>
+    database.user=postgres
+    database.server.name=postgres
+    database.password=<pg-password>
+    database.dbname=source
+    topic.prefix=pg
+    table.include.list=public.test
+---
+apiVersion: kafka.kubedb.com/v1alpha1
+kind: Connector
+metadata:
+  name: pg-source-connector
+  namespace: demo
+spec:
+  configSecret:
+    name: pg-source-config
+  connectClusterRef:
+    name: connect-cluster
+    namespace: demo
+  terminationPolicy: WipeOut
