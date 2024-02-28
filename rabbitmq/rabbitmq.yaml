@@ -14,18 +14,32 @@ spec:
     resources:
       requests:
         storage: 1Gi
-    storageClassName: standard-rwo
+#    storageClassName: standard
   storageType: Durable
   terminationPolicy: WipeOut  # DoNotTerminate(blocks deletion), Halt( retains pvc,secret), Delete (retains secret)
   podTemplate:
     spec:
       nodeSelector:
+        app: kubedb
         instance: rabbitmq
+        component: rabbitmq-database
       tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
         - effect: NoSchedule
           key: instance
           operator: Equal
           value: rabbitmq
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: rabbitmq-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
       containers:
         - name: rabbitmq
           resources:

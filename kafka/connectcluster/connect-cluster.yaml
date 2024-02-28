@@ -18,12 +18,26 @@ spec:
   podTemplate:
     spec:
       nodeSelector:
+        app: kubedb
         instance: kafka
+        component: kafka-database
       tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
         - effect: NoSchedule
           key: instance
           operator: Equal
           value: kafka
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: kafka-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
       containers:
         - name: connect-cluster
           resources:

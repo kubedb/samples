@@ -7,12 +7,26 @@ spec:
   podTemplate:
     spec:
       nodeSelector:
+        app: kubedb
         instance: zookeeper
+        component: zookeeper-database
       tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
         - effect: NoSchedule
           key: instance
           operator: Equal
           value: zookeeper
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: zookeeper-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
       containers:
         - name: zookeeper
           resources:
@@ -25,7 +39,7 @@ spec:
     resources:
       requests:
         storage: "100Mi"
-    storageClassName: standard-rwo
+#    storageClassName: standard
     accessModes:
       - ReadWriteOnce
   serviceTemplates:

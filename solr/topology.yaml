@@ -14,12 +14,26 @@ spec:
       podTemplate:
         spec:
           nodeSelector:
+            app: kubedb
             instance: solr
+            component: solr-database
           tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
             - effect: NoSchedule
               key: instance
               operator: Equal
               value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
           containers:
             - name: solr
               resources:
@@ -32,17 +46,31 @@ spec:
         resources:
           requests:
             storage: 500Mi
-        storageClassName: standard-rwo
+#        storageClassName: standard
     data:
       podTemplate:
         spec:
           nodeSelector:
+            app: kubedb
             instance: solr
+            component: solr-database
           tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
             - effect: NoSchedule
               key: instance
               operator: Equal
               value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
           containers:
             - name: solr
               resources:
@@ -56,17 +84,31 @@ spec:
         resources:
           requests:
             storage: 3Gi
-        storageClassName: standard-rwo
+#        storageClassName: standard
     coordinator:
       podTemplate:
         spec:
           nodeSelector:
+            app: kubedb
             instance: solr
+            component: solr-database
           tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
             - effect: NoSchedule
               key: instance
               operator: Equal
               value: solr
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: solr-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
           containers:
             - name: solr
               resources:
@@ -79,7 +121,7 @@ spec:
         resources:
           requests:
             storage: 700Mi
-        storageClassName: standard-rwo
+#        storageClassName: standard
   serviceTemplates:
     - alias: primary
       spec:
