@@ -6,15 +6,15 @@ metadata:
 spec:
   version: 3.6.0
   connectorPlugins:
-    - gcs-0.13.0
-    - mongodb-1.11.0
-    - mysql-2.4.2.final
-    - postgres-2.4.2.final
-    - s3-2.15.0
+    - gcs-0.13.0 # sink
+    - mongodb-1.11.0 # source/sink
+    - mysql-2.4.2.final # source
+    - postgres-2.4.2.final # source
+    - s3-2.15.0 # sink
   kafkaRef:
     name: kafka-prod
     namespace: demo
-  replicas: 2
+  replicas: 3
   podTemplate:
     spec:
       nodeSelector:

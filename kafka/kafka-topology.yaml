@@ -5,8 +5,8 @@ metadata:
   namespace: demo
 spec:
   version: 3.6.0
-  podTemplate:
-    spec:
+  topology:
+    broker:
       nodeSelector:
         app: kubedb
         instance: kafka
@@ -28,9 +28,7 @@ spec:
           key: nodepool_type
           operator: Equal
           value: n2-standard-2
-  topology:
-    broker:
-      replicas: 2
+      replicas: 3
       resources:
         requests:
           "cpu": 400m
@@ -43,7 +41,28 @@ spec:
             storage: 1Gi
 #        storageClassName: standard
     controller:
-      replicas: 2
+      nodeSelector:
+        app: kubedb
+        instance: kafka
+        component: kafka-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: kafka
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: kafka-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      replicas: 3
       resources:
         requests:
           "cpu": 400m

@@ -4,7 +4,7 @@ metadata:
   name: kafka-dev
   namespace: demo
 spec:
-  replicas: 2
+  replicas: 3
   version: 3.6.0
   podTemplate:
     spec:
