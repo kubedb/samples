@@ -15,4 +15,23 @@ spec:
     name: kafka-prod
     namespace: demo
   replicas: 2
+  podTemplate:
+    spec:
+      nodeSelector:
+        instance: kafka
+      tolerations:
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: kafka
+      containers:
+        - name: connect-cluster
+          resources:
+            requests:
+              "cpu": 400m
+              "memory": "1200Mi"
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
   terminationPolicy: WipeOut
