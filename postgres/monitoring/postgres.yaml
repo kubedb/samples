@@ -1,18 +1,18 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: Postgres
 metadata:
-  name: zk-cluster
+  name: postgres
   namespace: demo
 spec:
-  version: 3.8.3
-  replicas: 2
+  version: "13.13"
+  terminationPolicy: WipeOut
   storage:
+    storageClassName: "standard"
+    accessModes:
+    - ReadWriteOnce
     resources:
       requests:
-        storage: "100Mi"
-    accessModes:
-      - ReadWriteOnce
-  terminationPolicy: WipeOut
+        storage: 1Gi
   monitor:
     agent: prometheus.io/operator
     prometheus:

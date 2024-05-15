@@ -1,0 +1,49 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Singlestore
+metadata:
+  name: singlestore
+  namespace: demo
+spec:
+  version: "8.1.32"
+  licenseSecret:
+    name: license-secret
+  storageType: Durable
+  topology:
+    aggregator:
+      replicas: 3
+      storage:
+        storageClassName: "standard-rwo"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    leaf:
+      podTemplate:
+        spec:
+          containers:
+            - name: singlestore
+              resources:
+                requests:
+                  "cpu": 700m
+                  "memory": "1400Mi"
+      replicas: 2
+      storage:
+        storageClassName: "standard-rwo"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+  terminationPolicy: WipeOut
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

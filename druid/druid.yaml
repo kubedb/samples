@@ -1,13 +1,11 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Druid
 metadata:
-  name: druid-sample
-  namespace: druid
+  name: druid
+  namespace: demo
 spec:
   version: 28.0.1
   storageType: Ephemeral
-  #  configSecret:
-  #    name: custom-config
   deepStorage:
     type: s3
     configSecret:
@@ -25,35 +23,6 @@ spec:
     overlords:
       replicas: 1
     brokers:
-      podTemplate:
-        spec:
-          nodeSelector:
-            app: kubedb
-            instance: druid
-            component: druid-database
-          tolerations:
-            - effect: NoSchedule
-              key: app
-              operator: Equal
-              value: kubedb
-            - effect: NoSchedule
-              key: instance
-              operator: Equal
-              value: druid
-            - effect: NoSchedule
-              key: component
-              operator: Equal
-              value: druid-database
-            - effect: NoSchedule
-              key: nodepool_type
-              operator: Equal
-              value: n2-standard-2
-          containers:
-            - name: druid
-              resources:
-                requests:
-                  cpu: 700m
-                  memory: "1200Mi"
       replicas: 1
     historicals:
       replicas: 1
@@ -75,7 +44,11 @@ spec:
 #        storageClassName: standard
     routers:
       replicas: 1
-  serviceTemplates:
-  - alias: primary
-    spec:
-      type: LoadBalancer
+  terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

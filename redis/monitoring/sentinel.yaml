@@ -1,15 +1,17 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: RedisSentinel
 metadata:
-  name: zk-cluster
+  name: sentinel
   namespace: demo
 spec:
-  version: 3.8.3
-  replicas: 2
+  version: 6.2.14
+  replicas: 3
+  disableAuth: true
+  storageType: Durable
   storage:
     resources:
       requests:
-        storage: "100Mi"
+        storage: 1Gi
     accessModes:
       - ReadWriteOnce
   terminationPolicy: WipeOut

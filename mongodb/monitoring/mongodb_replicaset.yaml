@@ -1,18 +1,20 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: MongoDB
 metadata:
-  name: zk-cluster
+  name: mongodb-replicaset
   namespace: demo
 spec:
-  version: 3.8.3
+  version: "4.4.26"
   replicas: 2
+  replicaSet:
+    name: rs0
   storage:
-    resources:
-      requests:
-        storage: "100Mi"
+    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
-  terminationPolicy: WipeOut
+    resources:
+      requests:
+        storage: 1Gi
   monitor:
     agent: prometheus.io/operator
     prometheus:

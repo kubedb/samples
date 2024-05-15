@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: FerretDB
 metadata:
-  name: ferret
+  name: ferretdb
   namespace: demo
 spec:
   version: "1.18.0"

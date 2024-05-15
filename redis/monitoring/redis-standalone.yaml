@@ -1,17 +1,20 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: Redis
 metadata:
-  name: zk-cluster
+  name: redis-standalone
   namespace: demo
 spec:
-  version: 3.8.3
-  replicas: 2
+  version: 7.2.3
+  replicas: 1
+  disableAuth: true
+  storageType: Durable
   storage:
-    resources:
-      requests:
-        storage: "100Mi"
+    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
   terminationPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator

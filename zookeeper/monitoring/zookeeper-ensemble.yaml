@@ -1,17 +1,22 @@
 apiVersion: kubedb.com/v1alpha2
 kind: ZooKeeper
 metadata:
-  name: zk-cluster
+  name: zookeeper
   namespace: demo
 spec:
   version: 3.8.3
-  replicas: 2
+  replicas: 3
   storage:
     resources:
       requests:
         storage: "100Mi"
+#    storageClassName: standard
     accessModes:
       - ReadWriteOnce
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
   terminationPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator

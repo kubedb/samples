@@ -1,0 +1,29 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Singlestore
+metadata:
+  name: standalone
+  namespace: sdb
+spec:
+  version: "8.1.32"
+  licenseSecret:
+    name: license-secret
+  storageType: Durable
+  storage:
+    storageClassName: "standard-rwo"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  terminationPolicy: WipeOut
+  serviceTemplates:
+  - alias: primary
+    spec:
+      type: LoadBalancer
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

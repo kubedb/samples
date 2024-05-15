@@ -1,15 +1,21 @@
 apiVersion: kubedb.com/v1alpha2
-kind: ZooKeeper
+kind: Redis
 metadata:
-  name: zk-cluster
+  name: redis
   namespace: demo
 spec:
-  version: 3.8.3
-  replicas: 2
+  disableAuth: true
+  version: 7.2.3
+  mode: Cluster
+  cluster:
+    master: 2
+    replicas: 1
+  storageType: Durable
   storage:
     resources:
       requests:
-        storage: "100Mi"
+        storage: "2Gi"
+#    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
   terminationPolicy: WipeOut
