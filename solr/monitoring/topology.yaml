@@ -2,12 +2,12 @@ apiVersion: kubedb.com/v1alpha2
 kind: Solr
 metadata:
   name: solr
-  namespace: solr
+  namespace: demo
 spec:
   version: 9.4.1
-  terminationPolicy: WipeOut
+  terminationPolicy: Halt
   zookeeperRef:
-    name: zookeeper-prod
+    name: zookeeper
     namespace: demo
   topology:
     overseer:

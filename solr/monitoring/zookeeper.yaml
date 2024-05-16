@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: ZooKeeper
 metadata:
-  name: zookeeper-prod
+  name: zookeeper
   namespace: demo
 spec:
   version: 3.8.3

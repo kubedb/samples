@@ -4,15 +4,22 @@ metadata:
   name: singlestore
   namespace: demo
 spec:
-  version: "8.1.32"
+  version: "8.5.7"
   licenseSecret:
     name: license-secret
   storageType: Durable
   topology:
     aggregator:
-      replicas: 3
+      podTemplate:
+        spec:
+          containers:
+            - name: singlestore
+              resources:
+                requests:
+                  "cpu": 600m
+                  "memory": "2000Mi"
+      replicas: 2
       storage:
-        storageClassName: "standard-rwo"
         accessModes:
           - ReadWriteOnce
         resources:
@@ -26,20 +33,15 @@ spec:
               resources:
                 requests:
                   "cpu": 700m
-                  "memory": "1400Mi"
-      replicas: 2
+                  "memory": "2000Mi"
+      replicas: 1
       storage:
-        storageClassName: "standard-rwo"
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 10Gi
   terminationPolicy: WipeOut
-  serviceTemplates:
-    - alias: primary
-      spec:
-        type: LoadBalancer
   monitor:
     agent: prometheus.io/operator
     prometheus:

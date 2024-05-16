@@ -1,11 +1,11 @@
 apiVersion: kubedb.com/v1alpha2
 kind: ZooKeeper
 metadata:
-  name: zk-cluster
+  name: zookeeper
   namespace: demo
 spec:
   version: 3.8.3
-  replicas: 2
+  replicas: 3
   storage:
     resources:
       requests:

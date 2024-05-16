@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MySQL
 metadata:
-  name: mysql-cluster
+  name: mysql
   namespace: demo
 spec:
   version: "8.0.35"
@@ -20,7 +20,7 @@ spec:
       - ReadWriteOnce
     resources:
       requests:
-        storage: 100Mi
+        storage: 1Gi
   init:
     script:
       configMap:

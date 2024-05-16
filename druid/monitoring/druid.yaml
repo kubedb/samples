@@ -11,16 +11,14 @@ spec:
     configSecret:
       name: deep-storage-config
   metadataStorage:
-    name: mysql-cluster
-    namespace: druid
+    name: mysql
+    namespace: demo
     createTables: true
   zookeeperRef:
-    name: zk-cluster
-    namespace: druid
+    name: zookeeper
+    namespace: demo
   topology:
     coordinators:
-      replicas: 1
-    overlords:
       replicas: 1
     brokers:
       replicas: 1
@@ -44,7 +42,7 @@ spec:
     #        storageClassName: standard
     routers:
       replicas: 1
-  terminationPolicy: WipeOut
+  terminationPolicy: Delete
   monitor:
     agent: prometheus.io/operator
     prometheus:

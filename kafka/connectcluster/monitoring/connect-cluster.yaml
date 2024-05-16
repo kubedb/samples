@@ -4,7 +4,7 @@ metadata:
   name: connectcluster
   namespace: demo
 spec:
-  version: 3.6.0
+  version: 3.6.1
   connectorPlugins:
     - gcs-0.13.0 # sink
     - mongodb-1.11.0 # source/sink
