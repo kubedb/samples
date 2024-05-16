@@ -2,7 +2,7 @@ apiVersion: kubedb.com/v1alpha2
 kind: MySQL
 metadata:
   name: mysql-cluster
-  namespace: druid
+  namespace: demo
 spec:
   version: "8.0.35"
   topology:
@@ -15,7 +15,7 @@ spec:
           cpu: 400m
           memory: 700Mi
   storage:
-#    storageClassName: "standard"
+    #    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
     resources:
@@ -26,3 +26,10 @@ spec:
       configMap:
         name: my-init-script
   terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
