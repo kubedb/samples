@@ -63,7 +63,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-#        storageClassName: standard
+    #        storageClassName: standard
     middleManagers:
       replicas: 1
       storage:
@@ -72,10 +72,10 @@ spec:
         resources:
           requests:
             storage: 1Gi
-#        storageClassName: standard
+    #        storageClassName: standard
     routers:
       replicas: 1
   serviceTemplates:
-  - alias: primary
-    spec:
-      type: LoadBalancer
+    - alias: primary
+      spec:
+        type: LoadBalancer

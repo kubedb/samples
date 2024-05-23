@@ -1,0 +1,29 @@
+apiVersion: kafka.kubedb.com/v1alpha1
+kind: ConnectCluster
+metadata:
+  name: connectcluster
+  namespace: demo
+spec:
+  version: 3.6.1
+  connectorPlugins:
+    - gcs-0.13.0 # sink
+    - mongodb-1.11.0 # source/sink
+    - mysql-2.4.2.final # source
+    - postgres-2.4.2.final # source
+    - s3-2.15.0 # sink
+  kafkaRef:
+    name: kafka-prod
+    namespace: demo
+  replicas: 3
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
+  terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

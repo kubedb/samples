@@ -1,0 +1,52 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Druid
+metadata:
+  name: druid
+  namespace: demo
+spec:
+  version: 28.0.1
+  storageType: Ephemeral
+  deepStorage:
+    type: s3
+    configSecret:
+      name: deep-storage-config
+  metadataStorage:
+    name: mysql
+    namespace: demo
+    createTables: true
+  zookeeperRef:
+    name: zookeeper
+    namespace: demo
+  topology:
+    coordinators:
+      replicas: 1
+    brokers:
+      replicas: 1
+    historicals:
+      replicas: 1
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    #        storageClassName: standard
+    middleManagers:
+      replicas: 1
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    #        storageClassName: standard
+    routers:
+      replicas: 1
+  terminationPolicy: Delete
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

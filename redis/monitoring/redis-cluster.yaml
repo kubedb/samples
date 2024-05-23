@@ -1,0 +1,28 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Redis
+metadata:
+  name: redis
+  namespace: demo
+spec:
+  disableAuth: true
+  version: 7.2.3
+  mode: Cluster
+  cluster:
+    master: 2
+    replicas: 1
+  storageType: Durable
+  storage:
+    resources:
+      requests:
+        storage: "2Gi"
+#    storageClassName: "standard"
+    accessModes:
+      - ReadWriteOnce
+  terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

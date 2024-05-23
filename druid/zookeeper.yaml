@@ -7,26 +7,26 @@ spec:
   podTemplate:
     spec:
       nodeSelector:
-#        app: kubedb
+        #        app: kubedb
         instance: zookeeper
-#        component: zookeeper-database
+      #        component: zookeeper-database
       tolerations:
-#        - effect: NoSchedule
-#          key: app
-#          operator: Equal
-#          value: kubedb
+        #        - effect: NoSchedule
+        #          key: app
+        #          operator: Equal
+        #          value: kubedb
         - effect: NoSchedule
           key: instance
           operator: Equal
           value: zookeeper
-#        - effect: NoSchedule
-#          key: component
-#          operator: Equal
-#          value: zookeeper-database
-#        - effect: NoSchedule
-#          key: nodepool_type
-#          operator: Equal
-#          value: n2-standard-2
+      #        - effect: NoSchedule
+      #          key: component
+      #          operator: Equal
+      #          value: zookeeper-database
+      #        - effect: NoSchedule
+      #          key: nodepool_type
+      #          operator: Equal
+      #          value: n2-standard-2
       containers:
         - name: zookeeper
           resources:

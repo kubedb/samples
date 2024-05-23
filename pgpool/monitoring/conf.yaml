@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: user-conf
+  namespace: demo
+stringData:
+  user.conf: "max_connections=1000"

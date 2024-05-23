@@ -4,7 +4,7 @@ tenant:
     volumesPerServer: 1
   certificate:
     requestAutoCert: false
-  buckets: 
+  buckets:
   - name: "druid"
   persistence:
     size: 1Gi

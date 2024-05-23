@@ -1,8 +1,8 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MySQL
 metadata:
-  name: mysql-cluster
-  namespace: druid
+  name: mysql
+  namespace: demo
 spec:
   version: "8.0.35"
   topology:
@@ -20,8 +20,16 @@ spec:
       - ReadWriteOnce
     resources:
       requests:
-        storage: 100Mi
+        storage: 1Gi
   init:
     script:
       configMap:
         name: my-init-script
+  terminationPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s

@@ -1,0 +1,20 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Pgpool
+metadata:
+  name: pgpool
+  namespace: demo
+spec:
+  version: "4.5.0"
+  replicas: 1
+  postgresRef:
+    name: postgres
+    namespace: demo
+  terminationPolicy: WipeOut
+  syncUsers: true
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
