@@ -1,0 +1,17 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Singlestore
+metadata:
+  name: singlestore-sample
+  namespace: demo
+spec:
+  version: "8.5.7"
+  licenseSecret:
+    name: license-secret
+  storageType: Durable
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  terminationPolicy: WipeOut
