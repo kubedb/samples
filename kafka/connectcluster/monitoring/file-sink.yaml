@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: file-sink-config
+  namespace: demo
+stringData:
+  config.properties: |
+    connector.class=FileStreamSink
+    tasks.max=1
+    file=/opt/kafka/graphana.sink.txt
+    topics=graphana
+---
+apiVersion: kafka.kubedb.com/v1alpha1
+kind: Connector
+metadata:
+  name: file-sink-connector
+  namespace: demo
+spec:
+  configSecret:
+    name: file-sink-config
+  connectClusterRef:
+    name: connectcluster
+    namespace: demo
+  terminationPolicy: WipeOut

@@ -1,11 +1,19 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Kafka
 metadata:
-  name: kafka-prod
+  name: kafka
   namespace: demo
 spec:
-  replicas: 3
+  replicas: 2
   version: 3.6.0
+  podTemplate:
+    spec:
+      containers:
+        - name: kafka
+          resources:
+            requests:
+              "cpu": 500m
+              "memory": "1400Mi"
   storage:
     accessModes:
       - ReadWriteOnce

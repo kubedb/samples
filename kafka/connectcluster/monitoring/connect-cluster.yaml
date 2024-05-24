@@ -5,20 +5,10 @@ metadata:
   namespace: demo
 spec:
   version: 3.6.1
-  connectorPlugins:
-    - gcs-0.13.0 # sink
-    - mongodb-1.11.0 # source/sink
-    - mysql-2.4.2.final # source
-    - postgres-2.4.2.final # source
-    - s3-2.15.0 # sink
   kafkaRef:
-    name: kafka-prod
+    name: kafka
     namespace: demo
-  replicas: 3
-  serviceTemplates:
-    - alias: primary
-      spec:
-        type: LoadBalancer
+  replicas: 2
   terminationPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
