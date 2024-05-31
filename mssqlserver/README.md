@@ -1,3 +1,18 @@
+## Install csi-driver-cacerts
+which will be used to add self-signed ca certificates to the OS trusted certificate issuers (eg, /etc/ssl/certs/ca-certificates.crt
+
+```
+$ helm repo add appscode https://charts.appscode.com/stable/
+$ helm repo update
+$ helm upgrade -i \
+  cert-manager-csi-driver-cacerts appscode/cert-manager-csi-driver-cacerts \
+  -n cert-manager --wait
+```
+
+## Install Cert Manager
+` kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml `
+
+
 As pre-requisite, at first, we have to create an Issuer.
 That will be used to generate the certificate used for TLS settings and internal endpoint authentication of availability group replicas
 
