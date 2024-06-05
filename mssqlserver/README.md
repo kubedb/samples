@@ -1,3 +1,7 @@
+## Install Cert Manager
+` kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml `
+
+
 ## Install csi-driver-cacerts
 which will be used to add self-signed ca certificates to the OS trusted certificate issuers (eg, /etc/ssl/certs/ca-certificates.crt
 
@@ -9,8 +13,6 @@ $ helm upgrade -i \
   -n cert-manager --wait
 ```
 
-## Install Cert Manager
-` kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml `
 
 
 As pre-requisite, at first, we have to create an Issuer.
@@ -21,7 +23,7 @@ Start off by generating our ca-certificates using openssl
 ` openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./ca.key -out ./ca.crt -subj "/CN=MSSQLServer/O=KubeDB" `
 
 create a secret using the certificate files we have just generated,  
-`kubectl create secret tls mssqlserver-ca --cert=ca.crt  --key=ca.key --namespace=sample`
+`kubectl create secret tls mssqlserver-ca --cert=ca.crt  --key=ca.key --namespace=demo`
 
 
 Now, we are going to create an Issuer using the mssqlserver-ca secret that contains the ca-certificate we have just created.
