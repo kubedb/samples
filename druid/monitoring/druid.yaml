@@ -5,7 +5,7 @@ metadata:
   namespace: demo
 spec:
   version: 28.0.1
-  storageType: Ephemeral
+#  storageType: Ephemeral
   deepStorage:
     type: s3
     configSecret:
@@ -18,31 +18,9 @@ spec:
     name: zookeeper
     namespace: demo
   topology:
-    coordinators:
-      replicas: 1
-    brokers:
-      replicas: 1
-    historicals:
-      replicas: 1
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-    #        storageClassName: standard
-    middleManagers:
-      replicas: 1
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-    #        storageClassName: standard
     routers:
       replicas: 1
-  terminationPolicy: Delete
+  deletionPolicy: Delete
   monitor:
     agent: prometheus.io/operator
     prometheus:

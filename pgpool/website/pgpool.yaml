@@ -10,4 +10,4 @@ spec:
     name: ha-postgres
     namespace: demo
   syncUsers: true
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

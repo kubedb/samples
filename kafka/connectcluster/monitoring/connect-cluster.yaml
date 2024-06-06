@@ -9,7 +9,7 @@ spec:
     name: kafka
     namespace: demo
   replicas: 2
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:

@@ -9,7 +9,7 @@ spec:
   postgresRef:
     name: ha-postgres
     namespace: demo
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   syncUsers: true
   podTemplate:
     spec:

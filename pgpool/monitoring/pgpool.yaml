@@ -9,7 +9,7 @@ spec:
   postgresRef:
     name: postgres
     namespace: demo
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   syncUsers: true
   monitor:
     agent: prometheus.io/operator

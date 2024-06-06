@@ -21,4 +21,4 @@ spec:
   connectClusterRef:
     name: connectcluster
     namespace: demo
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
