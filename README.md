@@ -9,6 +9,7 @@ $ helm upgrade -i kubedb oci://ghcr.io/appscode-charts/kubedb \
     --set kubedb-webhook-server.server.securityContext.seccompProfile.type=RuntimeDefault \
     --set kubedb-ops-manager.operator.securityContext.seccompProfile.type=RuntimeDefault \
     --set kubedb-autoscaler.operator.securityContext.seccompProfile.type=RuntimeDefault \
+    --set global.featureGates.MSSQLServer=true \
     --set global.featureGates.RabbitMQ=true \
     --set global.featureGates.ZooKeeper=true \
     --set global.featureGates.Solr=true \
