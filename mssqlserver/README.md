@@ -1,18 +1,5 @@
 ## Install Cert Manager
-` kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml `
-
-
-## Install csi-driver-cacerts
-which will be used to add self-signed ca certificates to the OS trusted certificate issuers (eg, /etc/ssl/certs/ca-certificates.crt
-
-```
-$ helm repo add appscode https://charts.appscode.com/stable/
-$ helm repo update
-$ helm upgrade -i \
-  cert-manager-csi-driver-cacerts appscode/cert-manager-csi-driver-cacerts \
-  -n cert-manager --wait
-```
-
+` kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml `
 
 
 As pre-requisite, at first, we have to create an Issuer.
@@ -38,3 +25,19 @@ Below is the YAML of the Issuer CR that we are going to create.
 
 
 
+## For TLS enabled MS SQL Server: Install csi-driver-cacerts
+which will be used to add self-signed ca certificates to the OS trusted certificate issuers (eg, /etc/ssl/certs/ca-certificates.crt
+
+```
+$ helm repo add appscode https://charts.appscode.com/stable/
+$ helm repo update
+$ helm upgrade -i \
+  cert-manager-csi-driver-cacerts appscode/cert-manager-csi-driver-cacerts \
+  -n cert-manager --wait
+```
+
+## To provision TLS enabled Standalone MS SQL Server 
+`kubectl apply -f mssqlserver-standalone-tls.yaml`
+
+## To provision TLS enabled MS SQL Server Availability Group cluster
+`kubectl apply -f mssqlserver-ag-tls.yaml`
