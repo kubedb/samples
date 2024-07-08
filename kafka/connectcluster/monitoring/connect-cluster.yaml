@@ -19,7 +19,7 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:

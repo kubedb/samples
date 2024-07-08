@@ -45,4 +45,4 @@ spec:
         requests:
           cpu: "400m"
           memory: "600Mi"
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

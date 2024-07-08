@@ -14,7 +14,7 @@ spec:
         storage: 1Gi
     accessModes:
       - ReadWriteOnce
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:

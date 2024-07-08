@@ -25,7 +25,7 @@ spec:
     script:
       configMap:
         name: my-init-script
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:

@@ -42,7 +42,7 @@ spec:
     #        storageClassName: standard
     routers:
       replicas: 1
-  terminationPolicy: Delete
+  deletionPolicy: Delete
   monitor:
     agent: prometheus.io/operator
     prometheus:

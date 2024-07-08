@@ -18,7 +18,7 @@ spec:
 #    storageClassName: "standard"
     accessModes:
       - ReadWriteOnce
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:
