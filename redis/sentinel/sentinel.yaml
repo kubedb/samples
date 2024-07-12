@@ -31,10 +31,12 @@ spec:
           key: nodepool_type
           operator: Equal
           value: n2-standard-2
-      resources:
-        requests:
-          cpu: "400m"
-          memory: "600Mi"
+      containers:
+      - name: redis
+        resources:
+          requests:
+            cpu: "400m"
+            memory: "600Mi"
   storage:
     resources:
       requests:
