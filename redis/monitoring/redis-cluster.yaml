@@ -8,8 +8,8 @@ spec:
   version: 7.2.3
   mode: Cluster
   cluster:
-    master: 2
-    replicas: 1
+    shards: 3
+    replicas: 2
   storageType: Durable
   storage:
     resources:
