@@ -32,7 +32,7 @@ spec:
           operator: Equal
           value: n2-standard-2
       containers:
-      - name: redis
+      - name: redissentinel
         resources:
           requests:
             cpu: "400m"
