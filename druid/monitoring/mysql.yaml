@@ -1,4 +1,4 @@
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: MySQL
 metadata:
   name: mysql
@@ -9,11 +9,13 @@ spec:
     mode: GroupReplication
   replicas: 3
   podTemplate:
-    spec:
-      resources:
-        requests:
-          cpu: 400m
-          memory: 700Mi
+    containers:
+    - name: mysql
+      spec:
+        resources:
+          requests:
+            cpu: 400m
+            memory: 700Mi
   storage:
     #    storageClassName: "standard"
     accessModes:
