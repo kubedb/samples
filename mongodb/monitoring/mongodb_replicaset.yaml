@@ -22,3 +22,5 @@ spec:
         labels:
           release: prometheus
         interval: 10s
+      exporter:
+        args: [ "--compatible-mode" ]
