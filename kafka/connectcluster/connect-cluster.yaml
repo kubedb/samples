@@ -48,4 +48,4 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

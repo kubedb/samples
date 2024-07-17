@@ -5,7 +5,7 @@ metadata:
   namespace: solr
 spec:
   version: 9.4.1
-  terminationPolicy: Delete
+  deletionPolicy: Delete
   replicas: 2
   zookeeperRef:
     name: zk-com

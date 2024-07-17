@@ -46,4 +46,4 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
-  terminationPolicy: Halt
+  deletionPolicy: Halt

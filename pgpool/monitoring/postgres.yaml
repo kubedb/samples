@@ -4,7 +4,7 @@ metadata:
   name: postgres
   namespace: demo
 spec:
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   configSecret:
     name: user-conf
   version: "13.13"

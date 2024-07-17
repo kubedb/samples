@@ -12,5 +12,5 @@ spec:
         storage: 2Gi
     storageClassName: standard-rwo
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: "15.3"

@@ -16,7 +16,7 @@ spec:
         storage: 500Mi
   backend:
     externallyManaged: false
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/operator
     prometheus:

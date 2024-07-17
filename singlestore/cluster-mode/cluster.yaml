@@ -64,7 +64,7 @@ spec:
         resources:
           requests:
             storage: 10Gi
-  terminationPolicy: Halt
+  deletionPolicy: Halt
   serviceTemplates:
     - alias: primary
       spec:

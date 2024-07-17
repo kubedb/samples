@@ -1,4 +1,4 @@
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: RedisSentinel
 metadata:
   name: sentinel
@@ -31,14 +31,16 @@ spec:
           key: nodepool_type
           operator: Equal
           value: n2-standard-2
-      resources:
-        requests:
-          cpu: "400m"
-          memory: "600Mi"
+      containers:
+      - name: redissentinel
+        resources:
+          requests:
+            cpu: "400m"
+            memory: "600Mi"
   storage:
     resources:
       requests:
         storage: 1Gi
     accessModes:
       - ReadWriteOnce
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

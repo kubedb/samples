@@ -1,4 +1,4 @@
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Redis
 metadata:
   name: redis-cluster
@@ -8,8 +8,8 @@ spec:
   version: 7.2.3
   mode: Cluster
   cluster:
-    master: 3
-    replicas: 1
+    shards: 3
+    replicas: 2
   storageType: Durable
   storage:
     resources:
@@ -41,8 +41,10 @@ spec:
           key: nodepool_type
           operator: Equal
           value: n2-standard-2
-      resources:
-        requests:
-          cpu: "400m"
-          memory: "600Mi"
-  terminationPolicy: WipeOut
+      containers:
+      - name: redis
+        resources:
+          requests:
+            cpu: "400m"
+            memory: "600Mi"
+  deletionPolicy: WipeOut

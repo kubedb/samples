@@ -5,7 +5,7 @@ metadata:
   namespace: solr
 spec:
   version: 9.4.1
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   zookeeperRef:
     name: zk-com
     namespace: zookeeper
