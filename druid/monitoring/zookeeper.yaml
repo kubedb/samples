@@ -7,6 +7,7 @@ spec:
   version: 3.8.3
   replicas: 3
   storage:
+    storageClassName: longhorn
     resources:
       requests:
         storage: "100Mi"

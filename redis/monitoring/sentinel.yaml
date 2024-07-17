@@ -9,6 +9,7 @@ spec:
   disableAuth: true
   storageType: Durable
   storage:
+    storageClassName: longhorn
     resources:
       requests:
         storage: 1Gi

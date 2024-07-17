@@ -30,7 +30,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-    #        storageClassName: standard
+            storageClassName: longhorn
     middleManagers:
       replicas: 1
       storage:
@@ -39,7 +39,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-    #        storageClassName: standard
+            storageClassName: longhorn
     routers:
       replicas: 1
   deletionPolicy: Delete
