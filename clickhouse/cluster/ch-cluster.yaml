@@ -14,6 +14,24 @@ spec:
     - name: arman
       shards: 2
       replicas: 2
+      podTemplate:
+        spec:
+          containers:
+            - name: clickhouse
+              resources:
+                limits:
+                  memory: 3Gi
+                requests:
+                  cpu: 500m
+                  memory: 2Gi
+          initContainers:
+            - name: clickhouse-init
+              resources:
+                limits:
+                  memory: 2Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
       storage:
         accessModes:
           - ReadWriteOnce

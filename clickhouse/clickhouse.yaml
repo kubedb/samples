@@ -6,6 +6,16 @@ metadata:
 spec:
   version: 24.4.1
   replicas: 1
+  podTemplate:
+    spec:
+      containers:
+        - name: clickhouse
+          resources:
+            limits:
+              memory: 3Gi
+            requests:
+              cpu: 500m
+              memory: 2Gi
   storage:
     accessModes:
       - ReadWriteOnce
