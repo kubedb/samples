@@ -1,0 +1,45 @@
+apiVersion: kubedb.com/v1
+kind: PgBouncer
+metadata:
+  name: pb
+  namespace: demo
+spec:
+  sslMode: verify-full
+  tls:
+    issuerRef:
+      apiGroup: cert-manager.io
+      name: pb-ca-issuer
+      kind: Issuer
+    certificates:
+      - alias: server
+        subject:
+          organizations:
+            - kubedb:server
+        dnsNames:
+          - localhost
+        ipAddresses:
+          - "127.0.0.1"
+  version: "1.18.0"
+  replicas: 2
+  database:
+    syncUsers: true
+    databaseName: "postgres"
+    databaseRef:
+      name: "postgres"
+      namespace: demo
+  connectionPool:
+    port: 5432
+    reservePoolSize: 5
+    authType: cert
+  deletionPolicy: WipeOut
+  podTemplate:
+    spec:
+      containers:
+        - name: pgbouncer
+          resources:
+            limits:
+              cpu: .5
+              memory: 1Gi
+            requests:
+              cpu: .5
+              memory: 1Gi
