@@ -9,6 +9,7 @@ spec:
     externallyManaged: false
   sslMode: disabled
   storage:
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:

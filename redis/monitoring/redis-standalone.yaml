@@ -9,7 +9,7 @@ spec:
   disableAuth: true
   storageType: Durable
   storage:
-    storageClassName: "standard"
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:

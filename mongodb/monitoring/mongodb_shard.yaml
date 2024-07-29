@@ -13,7 +13,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: standard
+        storageClassName: longhorn
     mongos:
       replicas: 1
     shard:
@@ -23,7 +23,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: standard
+        storageClassName: longhorn
   monitor:
     agent: prometheus.io/operator
     prometheus:
@@ -31,3 +31,5 @@ spec:
         labels:
           release: prometheus
         interval: 10s
+      exporter:
+        args: ["--compatible-mode"]

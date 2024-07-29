@@ -20,6 +20,7 @@ spec:
                   "memory": "2000Mi"
       replicas: 2
       storage:
+        storageClassName: longhorn
         accessModes:
           - ReadWriteOnce
         resources:
@@ -36,6 +37,7 @@ spec:
                   "memory": "2000Mi"
       replicas: 1
       storage:
+        storageClassName: longhorn
         accessModes:
           - ReadWriteOnce
         resources:

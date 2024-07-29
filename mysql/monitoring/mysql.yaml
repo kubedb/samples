@@ -7,7 +7,7 @@ spec:
   version: "8.0.35"
   deletionPolicy: WipeOut
   storage:
-    storageClassName: "standard"
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:

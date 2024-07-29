@@ -11,6 +11,7 @@ spec:
   replicas: 3
   storageType: Durable
   storage:
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:

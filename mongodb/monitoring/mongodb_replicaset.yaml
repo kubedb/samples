@@ -9,7 +9,7 @@ spec:
   replicaSet:
     name: rs0
   storage:
-    storageClassName: "standard"
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:
@@ -22,3 +22,5 @@ spec:
         labels:
           release: prometheus
         interval: 10s
+      exporter:
+        args: [ "--compatible-mode" ]

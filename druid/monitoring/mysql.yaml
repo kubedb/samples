@@ -17,7 +17,7 @@ spec:
             cpu: 400m
             memory: 700Mi
   storage:
-    #    storageClassName: "standard"
+    storageClassName: "longhorn"
     accessModes:
       - ReadWriteOnce
     resources:

@@ -9,12 +9,12 @@ spec:
   # authSecret:
   #   name: rabbit-user  # reference to a secret containing user (admin) credentials
   storage:
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
-#    storageClassName: standard
   storageType: Durable
   deletionPolicy: WipeOut  # DoNotTerminate(blocks deletion), Halt( retains pvc,secret), Delete (retains secret)
   podTemplate:

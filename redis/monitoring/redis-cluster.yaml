@@ -15,7 +15,7 @@ spec:
     resources:
       requests:
         storage: "2Gi"
-#    storageClassName: "standard"
+    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
   deletionPolicy: WipeOut

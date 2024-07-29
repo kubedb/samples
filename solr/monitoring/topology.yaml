@@ -17,7 +17,7 @@ spec:
         resources:
           requests:
             storage: 500Mi
-#        storageClassName: standard
+        storageClassName: longhorn
     data:
       replicas: 1
       storage:
@@ -26,7 +26,7 @@ spec:
         resources:
           requests:
             storage: 3Gi
-#        storageClassName: standard
+        storageClassName: longhorn
     coordinator:
       storage:
         accessModes:
@@ -34,7 +34,7 @@ spec:
         resources:
           requests:
             storage: 700Mi
-#        storageClassName: standard
+        storageClassName: longhorn
   serviceTemplates:
     - alias: primary
       spec:
