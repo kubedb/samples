@@ -3,7 +3,7 @@
 
 ## Create an example issuer
 As pre-requisite, at first, we have to create an Issuer.
-That will be used to generate the certificate used for TLS settings and internal endpoint authentication of availability group replicas
+That will be used to generate the certificate used for TLS settings and internal endpoint authentication of available replicas
 
 - Start off by generating our ca-certificates using openssl   
   ` openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./ca.key -out ./ca.crt -subj "/CN=pgbouncer/O=KubeDB" `
