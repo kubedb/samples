@@ -1,0 +1,96 @@
+apiVersion: kubedb.com/v1
+kind: Kafka
+metadata:
+  labels:
+    app.kubernetes.io/instance: kf-dedicated
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kafkas.kubedb.com
+  name: kf-dedicated
+  namespace: demo
+spec:
+  deletionPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceMonitor:
+        interval: 30s
+        labels:
+          release: kube-prometheus-stack
+  storageType: Durable
+  topology:
+    broker:
+      podTemplate:
+        spec:
+          securityContext:
+            fsGroup: 1000650000
+          containers:
+          - name: kafka
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+      replicas: 2
+      storage:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    controller:
+      podTemplate:
+        spec:
+          securityContext:
+            fsGroup: 1000650000
+          containers:
+          - name: kafka
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+      replicas: 2
+      storage:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  version: 3.6.1

@@ -1,0 +1,75 @@
+apiVersion: kubedb.com/v1
+kind: Redis
+metadata:
+  name: rdc
+  namespace: demo
+spec:
+  cluster:
+    master: 3
+    replicas: 2
+  deletionPolicy: WipeOut
+  mode: Cluster
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceMonitor:
+        interval: 30s
+        labels:
+          release: kube-prometheus-stack
+  podTemplate:
+    spec:
+      securityContext:
+        fsGroup: 1000650000
+      containers:
+      - name: redis
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      initContainers:
+      - name: redis-init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 2Gi
+  storageType: Durable
+  version: 7.4.0
