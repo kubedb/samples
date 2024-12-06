@@ -9,7 +9,7 @@ spec:
   replicaSet:
     name: rs0
   storage:
-    storageClassName: longhorn
+#    storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
     resources:
