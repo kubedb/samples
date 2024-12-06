@@ -1,17 +1,32 @@
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
-  name: mssqlserver
+  name: mssql-ag
   namespace: demo
 spec:
   version: "2022-cu12"
-  replicas: 1
+  replicas: 3
+  topology:
+    mode: AvailabilityGroup
+    availabilityGroup:
+      databases:
+        - agdb1
+        - agdb2
   tls:
     issuerRef:
       name: mssqlserver-ca-issuer
       kind: Issuer
       apiGroup: "cert-manager.io"
     clientTLS: false
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9399
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
   podTemplate:
     spec:
       containers:
@@ -21,12 +36,17 @@ spec:
               value: "Y"
             - name: MSSQL_PID
               value: Evaluation
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1.5Gi"
+            limits:
+              memory: "2Gi"
   storageType: Durable
   storage:
-    storageClassName: "standard"
+#    storageClassName: "longhorn"
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
-  deletionPolicy: WipeOut
