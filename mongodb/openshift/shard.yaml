@@ -1,0 +1,172 @@
+apiVersion: kubedb.com/v1
+kind: MongoDB
+metadata:
+  name: test
+  namespace: demo
+spec:
+  deletionPolicy: WipeOut
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        args:
+          - --compatible-mode
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceMonitor:
+        interval: 30s
+        labels:
+          {}
+  shardTopology:
+    configServer:
+      podTemplate:
+        spec:
+          securityContext:
+            fsGroup: 1000650000
+          containers:
+          - name: mongodb
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 800m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+          - name: replication-mode-detector
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+          initContainers:
+          - name: copy-config
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+      replicas: 3
+      storage:
+        resources:
+          requests:
+            storage: 2Gi
+    mongos:
+      podTemplate:
+        spec:
+          securityContext:
+            fsGroup: 1000650000
+          containers:
+          - name: mongodb
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+          initContainers:
+          - name: copy-config
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+      replicas: 2
+    shard:
+      podTemplate:
+        spec:
+          securityContext:
+            fsGroup: 1000650000
+          containers:
+          - name: mongodb
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 900m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+          - name: replication-mode-detector
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+          initContainers:
+          - name: copy-config
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000650000
+              seccompProfile:
+                type: RuntimeDefault
+      replicas: 3
+      shards: 2
+      storage:
+        resources:
+          requests:
+            storage: 2Gi
+  version: 4.4.26

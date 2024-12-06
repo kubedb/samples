@@ -1,0 +1,147 @@
+apiVersion: kubedb.com/v1
+kind: RedisSentinel
+metadata:
+  labels:
+    app.kubernetes.io/instance: rdc
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: redises.kubedb.com
+  name: rdc-sentinel
+  namespace: demo
+spec:
+  deletionPolicy: WipeOut
+  replicas: 3
+  podTemplate:
+    spec:
+      securityContext:
+        fsGroup: 1000650000
+      containers:
+      - name: redissentinel
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      initContainers:
+      - name: sentinel-init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  storageType: Durable
+  version: 7.4.0
+---
+
+
+
+
+
+
+apiVersion: kubedb.com/v1
+kind: Redis
+metadata:
+  name: rds
+  namespace: demo
+spec:
+  sentinelRef:
+    name: rdc-sentinel
+    namespace: demo
+  deletionPolicy: WipeOut
+  mode: Sentinel
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceMonitor:
+        interval: 30s
+        labels:
+          release: kube-prometheus-stack
+  podTemplate:
+    spec:
+      securityContext:
+        fsGroup: 1000650000
+      containers:
+      - name: redis
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      - name: rd-coordinator
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+      initContainers:
+      - name: redis-init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000650000
+          seccompProfile:
+            type: RuntimeDefault
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 2Gi
+  storageType: Durable
+  version: 7.4.0
