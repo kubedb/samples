@@ -1,0 +1,69 @@
+apiVersion: kubedb.com/v1alpha2
+kind: ClickHouse
+metadata:
+  name: ch
+  namespace: demo
+spec:
+  authSecret:
+    name: ch3-auth
+  clusterTopology:
+    clickHouseKeeper:
+      spec:
+        podTemplate:
+          spec:
+            containers:
+            - name: clickhouse-keeper
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+            initContainers:
+            - name: clickhouse-init
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+        replicas: 3
+        storage:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: local-path
+        storageType: Durable
+    cluster:
+    - name: appscode-cluster
+      podTemplate:
+        spec:
+          containers:
+          - name: clickhouse
+            resources:
+              limits:
+                memory: 3Gi
+              requests:
+                cpu: 500m
+                memory: 2Gi
+          initContainers:
+          - name: clickhouse-init
+            resources:
+              limits:
+                memory: 2Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+      replicas: 2
+      shards: 2
+      storage:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      storageType: Durable
+  deletionPolicy: WipeOut
+  version: 24.4.1

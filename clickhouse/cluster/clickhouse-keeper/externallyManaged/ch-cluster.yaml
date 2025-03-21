@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha2
 kind: ClickHouse
 metadata:
-  name: ha-ch
+  name: ch
   namespace: demo
 spec:
   version: 24.4.1
