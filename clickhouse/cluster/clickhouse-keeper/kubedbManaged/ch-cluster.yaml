@@ -34,7 +34,6 @@ spec:
           resources:
             requests:
               storage: 1Gi
-          storageClassName: local-path
         storageType: Durable
     cluster:
     - name: appscode-cluster
