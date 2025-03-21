@@ -1,0 +1,81 @@
+apiVersion: kubedb.com/v1alpha2
+kind: RabbitMQ
+metadata:
+  name: rm-quickstart
+  namespace: demo
+spec:
+  version: "3.13.2"
+  #disableSecurity: true
+  replicas: 3
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  storageType: Durable
+  deletionPolicy: WipeOut  # DoNotTerminate(blocks deletion), Halt( retains pvc,secret), Delete (retains secret)
+  podTemplate:
+    spec:
+      securityContext:
+        fsGroup: 1000670000
+      containers:
+        - name: rabbitmq
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 0
+            runAsNonRoot: true
+            runAsUser: 1000670000
+            seccompProfile:
+              type: RuntimeDefault
+            resources:
+              requests:
+                cpu: "0.5"
+                memory: "1Gi"
+              limits:
+                cpu: "2"
+                memory: "2Gi"
+      initContainers:
+        - name: rabbitmq-init
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 0
+            runAsNonRoot: true
+            runAsUser: 1000670000
+            seccompProfile:
+              type: RuntimeDefault
+  monitor:
+  agent: prometheus.io/operator
+  prometheus:
+    serviceMonitor:
+      labels:
+        release: prometheus
+    exporter:
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 200m
+        limits:
+          memory: 512Mi
+          cpu: 250m
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      runAsGroup: 0
+      runAsNonRoot: true
+      runAsUser: 1000670000
+      seccompProfile:
+        type: RuntimeDefault
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
