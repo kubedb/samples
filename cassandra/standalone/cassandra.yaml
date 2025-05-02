@@ -2,27 +2,27 @@ apiVersion: kubedb.com/v1alpha2
 kind: Cassandra
 metadata:
   name: cassandra-sample
+  namespace: demo
 spec:
-  version: 5.0.0
-  replicas: 1
-  topology:
-  storageType: Ephemeral
+  version: 5.0.3
   storage:
     accessModes:
       - ReadWriteOnce
     resources:
       requests:
         storage: 2Gi
-  disableSecurity: false
   podTemplate:
     spec:
+      containers:
+        - name: cassandra
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: 4
+            requests:
+              memory: 1Gi
+              cpu: 1
       securityContext:
         runAsUser: 999
         fsGroup: 999
-      containers:
-        - name: cassandra
-          image: cassandra:5.0.0
-          securityContext:
-            runAsUser: 999
-            fsGroup: 999
-  deletionPolicy: Halt
+  deletionPolicy: WipeOut
