@@ -1,0 +1,77 @@
+apiVersion: kubedb.com/v1alpha2
+kind: MSSQLServer
+metadata:
+  name: ms-standalone
+  namespace: demo
+spec:
+  version: "2022-cu16"
+  replicas: 1
+  storageType: Durable
+  tls:
+    issuerRef:
+      name: mssqlserver-ca-issuer
+      kind: Issuer
+      apiGroup: "cert-manager.io"
+    clientTLS: false
+  podTemplate:
+    spec:
+      securityContext:
+        fsGroup: 1000670000
+      containers:
+      - name: mssql
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: Evaluation
+        securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+              drop:
+                - ALL
+            runAsGroup: 0
+            runAsNonRoot: true
+            runAsUser: 1000670000
+            seccompProfile:
+              type: RuntimeDefault
+      initContainers:
+        - name: mssql-init
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 0
+            runAsNonRoot: true
+            runAsUser: 1000670000
+            seccompProfile:
+              type: RuntimeDefault
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9399
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsGroup: 0
+          runAsNonRoot: true
+          runAsUser: 1000670000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
+  
+  storage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  deletionPolicy: WipeOut
