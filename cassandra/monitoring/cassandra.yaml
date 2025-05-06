@@ -2,13 +2,13 @@ apiVersion: kubedb.com/v1alpha2
 kind: Cassandra
 metadata:
   name: cassandra-sample
+  namespace: demo
 spec:
-  version: 5.0.0
+  version: 5.0.3
   topology:
     rack:
       - name: myrack
         replicas: 2
-        storageType: Ephemeral
         storage:
           accessModes:
             - ReadWriteOnce
@@ -24,8 +24,8 @@ spec:
                     memory: 4Gi
                     cpu: 4
                   requests:
-                    cpu: 1
                     memory: 1Gi
+                    cpu: 1
             securityContext:
               runAsUser: 999
               fsGroup: 999
