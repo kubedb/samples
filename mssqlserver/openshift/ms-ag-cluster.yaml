@@ -9,9 +9,10 @@ spec:
   topology:
     mode: AvailabilityGroup
     availabilityGroup:
-     databases:
-       - agdb1
-       - agdb2
+      databases:
+        - agdb1
+        - agdb2
+      secondaryAccessMode: Passive
   tls:
     issuerRef:
       name: mssqlserver-ca-issuer

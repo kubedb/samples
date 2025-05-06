@@ -4,7 +4,7 @@ metadata:
   name: mssqlserver
   namespace: demo
 spec:
-  version: "2022-cu12"
+  version: "2022-cu16"
   replicas: 1
   tls:
     issuerRef:

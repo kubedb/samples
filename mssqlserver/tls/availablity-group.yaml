@@ -4,7 +4,7 @@ metadata:
   name: mssqlserver-ag-tls
   namespace: demo
 spec:
-  version: "2022-cu12"
+  version: "2022-cu16"
   replicas: 3
   topology:
     mode: AvailabilityGroup
@@ -12,6 +12,7 @@ spec:
       databases:
         - agdb1
         - agdb2
+      secondaryAccessMode: Passive
   tls:
     issuerRef:
       name: mssqlserver-ca-issuer
@@ -27,6 +28,27 @@ spec:
               value: "Y"
             - name: MSSQL_PID
               value: Evaluation
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1.5Gi"
+            limits:
+              memory: "2Gi"
+        - name: mssql-coordinator
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+      initContainers:
+        - name: mssql-init
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
   storageType: Durable
   storage:
 #    storageClassName: "standard"

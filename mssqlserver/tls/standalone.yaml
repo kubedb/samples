@@ -4,7 +4,7 @@ metadata:
   name: mssql-standalone-tls
   namespace: demo
 spec:
-  version: "2022-cu12"
+  version: "2022-cu16"
   replicas: 1
   storageType: Durable
   tls:
@@ -22,6 +22,20 @@ spec:
               value: "Y"
             - name: MSSQL_PID
               value: Evaluation
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1.5Gi"
+            limits:
+              memory: "2Gi"
+      initContainers:
+        - name: mssql-init
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
   storage:
 #    storageClassName: "standard"
     accessModes:
