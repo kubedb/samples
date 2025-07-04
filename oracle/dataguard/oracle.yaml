@@ -50,8 +50,8 @@ spec:
             cpu: "4"
             memory: 10Gi
           requests:
-            cpu: "2"
-            memory: 5Gi
+            cpu: "1500m"
+            memory: 4Gi
       - name: oracle-coordinator
         resources:
           limits:
