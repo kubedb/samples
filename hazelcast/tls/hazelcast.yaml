@@ -30,6 +30,41 @@ spec:
   deletionPolicy: Halt
   licenseSecret:
     name: hz-license-key
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: solr
+        component: solr-database
+      tolerations:
+      - effect: NoSchedule
+        key: app
+        operator: Equal
+        value: kubedb
+      - effect: NoSchedule
+        key: instance
+        operator: Equal
+        value: solr
+      - effect: NoSchedule
+        key: component
+        operator: Equal
+        value: solr-database
+      - effect: NoSchedule
+        key: nodepool_type
+        operator: Equal
+        value: n2-standard-2
+      containers:
+      - name: hazelcast
+        resources:
+          requests:
+            "cpu": 500m
+            "memory": "1500Mi"
+      initContainers:
+      - name: hazelcast-init
+        resources:
+          requests:
+            "cpu": 200m
+            "memory": "1200Mi"
   replicas: 3
   version: 5.5.2
   storage:
