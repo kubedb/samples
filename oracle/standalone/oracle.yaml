@@ -4,7 +4,7 @@ metadata:
   name: oracle
   namespace: demo
 spec:
-  version: "oracle-21.3.0"
+  version: "21.3.0"
   replicas: 1
   edition: "enterprise"
   mode: "Standalone"
