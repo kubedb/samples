@@ -34,8 +34,8 @@ spec:
     spec:
       nodeSelector:
         app: kubedb
-        instance: solr
-        component: solr-database
+        instance: hazelcast
+        component: hazelcast-database
       tolerations:
       - effect: NoSchedule
         key: app
@@ -44,11 +44,11 @@ spec:
       - effect: NoSchedule
         key: instance
         operator: Equal
-        value: solr
+        value: hazelcast
       - effect: NoSchedule
         key: component
         operator: Equal
-        value: solr-database
+        value: hazelcast-database
       - effect: NoSchedule
         key: nodepool_type
         operator: Equal
@@ -64,7 +64,7 @@ spec:
         resources:
           requests:
             "cpu": 200m
-            "memory": "1200Mi"
+            "memory": "256Mi"
   replicas: 3
   version: 5.5.2
   storage:
