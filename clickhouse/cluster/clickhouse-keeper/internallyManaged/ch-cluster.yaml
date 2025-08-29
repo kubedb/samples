@@ -6,7 +6,7 @@ metadata:
 spec:
   clusterTopology:
     cluster:
-    - name: appscode-cluster
+      name: appscode-cluster
       podTemplate:
         spec:
           containers:
