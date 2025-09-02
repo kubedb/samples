@@ -10,6 +10,7 @@ spec:
       node:
         host: clickhouse-keeper.click-keeper
         port: 2181
+      externallyManaged: true
     cluster:
       name: arman
       shards: 2
