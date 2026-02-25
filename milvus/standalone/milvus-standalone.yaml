@@ -1,0 +1,40 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Milvus
+metadata:
+  name: milvus-standalone
+  namespace: demo
+spec:
+  version: "2.6.11"
+  topology:
+    mode: Standalone
+  objectStorage:
+    configSecret:
+      name: "my-release-minio"
+  metaStorage:
+    externallyManaged: true
+    endpoints:
+      - http://etcdcluster-sample-0.etcdcluster-sample.default.svc.cluster.local:2379
+      - http://etcdcluster-sample-1.etcdcluster-sample.default.svc.cluster.local:2379
+      - http://etcdcluster-sample-2.etcdcluster-sample.default.svc.cluster.local:2379
+  disableSecurity: false
+  authSecret:
+    name: "milvus-auth"
+    externallyManaged: true
+  storageType: Durable
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: local-path
+    resources:
+      requests:
+        storage: 10Gi
+  configuration:
+    secretName: milvus-standalone-custom-config
+    inline:
+      milvus.yaml: |
+        queryNode:
+          gracefulTime: 20
+        log:
+          level: info
+        common:
+          storageType: remote
