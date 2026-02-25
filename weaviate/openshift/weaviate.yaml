@@ -1,0 +1,33 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Weaviate
+metadata:
+  name: weaviate-sample
+  namespace: demo
+spec:
+  version: 1.33.1
+  replicas: 3
+  storageType: Durable
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  podTemplate:
+    spec:
+      containers:
+        - name: weaviate
+          securityContext:
+            runAsNonRoot: false
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 1Gi
+
+  deletionPolicy: WipeOut
+  healthChecker:
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 3
