@@ -1,0 +1,283 @@
+---
+# Source: milvus/charts/minio/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "my-release-minio"
+  namespace: "demo"
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: "my-release"
+---
+# Source: milvus/charts/minio/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-release-minio
+  namespace: "demo"
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: my-release
+    heritage: Helm
+type: Opaque
+data:
+  address: "bXktcmVsZWFzZS1taW5pby5kZW1vLnN2Yy5jbHVzdGVyLmxvY2FsOjkwMDA="
+  accesskey: "bWluaW9hZG1pbg=="
+  secretkey: "bWluaW9hZG1pbg=="
+---
+# Source: milvus/charts/minio/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-release-minio
+  namespace: demo
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: my-release
+    heritage: Helm
+data:
+  initialize: |-
+    #!/bin/sh
+    set -e ; # Have script exit in the event of a failed command.
+    MC_CONFIG_DIR="/etc/minio/mc/"
+    MC="/usr/bin/mc --insecure --config-dir ${MC_CONFIG_DIR}"
+    
+    # connectToMinio
+    # Use a check-sleep-check loop to wait for Minio service to be available
+    connectToMinio() {
+      SCHEME=$1
+      ATTEMPTS=0 ; LIMIT=29 ; # Allow 30 attempts
+      set -e ; # fail if we can't read the keys.
+      ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
+      set +e ; # The connections to minio are allowed to fail.
+      echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
+      MC_COMMAND="${MC} config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+      $MC_COMMAND ;
+      STATUS=$? ;
+      until [ $STATUS = 0 ]
+      do
+        ATTEMPTS=`expr $ATTEMPTS + 1` ;
+        echo \"Failed attempts: $ATTEMPTS\" ;
+        if [ $ATTEMPTS -gt $LIMIT ]; then
+          exit 1 ;
+        fi ;
+        sleep 2 ; # 1 second intervals between attempts
+        $MC_COMMAND ;
+        STATUS=$? ;
+      done ;
+      set -e ; # reset `e` as active
+      return 0
+    }
+    
+    # checkBucketExists ($bucket)
+    # Check if the bucket exists, by using the exit code of `mc ls`
+    checkBucketExists() {
+      BUCKET=$1
+      CMD=$(${MC} ls myminio/$BUCKET > /dev/null 2>&1)
+      return $?
+    }
+    
+    # createBucket ($bucket, $policy, $purge)
+    # Ensure bucket exists, purging if asked to
+    createBucket() {
+      BUCKET=$1
+      POLICY=$2
+      PURGE=$3
+      VERSIONING=$4
+    
+      # Purge the bucket, if set & exists
+      # Since PURGE is user input, check explicitly for `true`
+      if [ $PURGE = true ]; then
+        if checkBucketExists $BUCKET ; then
+          echo "Purging bucket '$BUCKET'."
+          set +e ; # don't exit if this fails
+          ${MC} rm -r --force myminio/$BUCKET
+          set -e ; # reset `e` as active
+        else
+          echo "Bucket '$BUCKET' does not exist, skipping purge."
+        fi
+      fi
+    
+      # Create the bucket if it does not exist
+      if ! checkBucketExists $BUCKET ; then
+        echo "Creating bucket '$BUCKET'"
+        ${MC} mb myminio/$BUCKET
+      else
+        echo "Bucket '$BUCKET' already exists."
+      fi
+    
+    
+      # set versioning for bucket
+      if [ ! -z $VERSIONING ] ; then
+        if [ $VERSIONING = true ] ; then
+            echo "Enabling versioning for '$BUCKET'"
+            ${MC} version enable myminio/$BUCKET
+        elif [ $VERSIONING = false ] ; then
+            echo "Suspending versioning for '$BUCKET'"
+            ${MC} version suspend myminio/$BUCKET
+        fi
+      else
+          echo "Bucket '$BUCKET' versioning unchanged."
+      fi
+    
+      # At this point, the bucket should exist, skip checking for existence
+      # Set policy on the bucket
+      echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
+      ${MC} policy set $POLICY myminio/$BUCKET
+    }
+    
+    # Try connecting to Minio instance
+    scheme=http
+    connectToMinio $scheme
+---
+
+# Source: milvus/charts/minio/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-release-minio
+  namespace: demo
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: my-release
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: minio
+    release: my-release
+---
+# Source: milvus/charts/minio/templates/statefulset.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-release-minio-svc
+  namespace: demo
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: "my-release"
+    heritage: "Helm"
+spec:
+  publishNotReadyAddresses: true
+  clusterIP: None
+  ports:
+    - name: http
+      port: 9000
+      protocol: TCP
+  selector:
+    app: minio
+    release: my-release
+
+---
+# Source: milvus/charts/minio/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-release-minio
+  namespace: demo
+  labels:
+    app: minio
+    chart: minio-8.0.17
+    release: my-release
+    heritage: Helm
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: "Parallel"
+  serviceName: my-release-minio-svc
+  replicas: 4
+  selector:
+    matchLabels:
+      app: minio
+      release: my-release
+  template:
+    metadata:
+      name: my-release-minio
+      labels:
+        app: minio
+        release: my-release
+      annotations:
+        checksum/secrets: aa3f4f64eb45653d3fee45079a6e55a9869ce76297baa50df3bc33192434d05e
+        checksum/config: ed4d4467dd70f3e0ed89e5d2bc3c4414b02a52fcf7db7f1b66b675b9016664a7
+    spec:
+      serviceAccountName: "my-release-minio"
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: minio
+          image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+          imagePullPolicy: IfNotPresent
+
+          command: [ "/bin/sh",
+                     "-ce",
+                     "/usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server  http://my-release-minio-{0...3}.my-release-minio-svc.demo.svc.cluster.local/export" ]
+          volumeMounts:
+            - name: export
+              mountPath: /export
+          ports:
+            - name: http
+              containerPort: 9000
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5
+          startupProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 60
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: my-release-minio
+                  key: accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: my-release-minio
+                  key: secretkey
+          resources:
+            requests:
+              memory: 2Gi
+      volumes:
+        - name: minio-user
+          secret:
+            secretName: my-release-minio
+  volumeClaimTemplates:
+    - metadata:
+        name: export
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 500Gi
