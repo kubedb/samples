@@ -12,7 +12,7 @@ kubectl apply -f minio.yaml
 Verify MinIO resources:
 
 ```bash
-kubectl get pods,svc,pvc -n kubedb
+kubectl get pods,svc,pvc -n demo
 ```
 
 ---
@@ -113,5 +113,5 @@ kubectl apply -f milvus-distributed.yaml
 ## Verify Milvus Deployment
 
 ```bash
-kubectl get pods,svc,pvc -n kubedb
+kubectl get pods,svc,pvc -n demo
 ```
