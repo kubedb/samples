@@ -36,7 +36,7 @@ spec:
               storage: 1Gi
         storageType: Durable
     cluster:
-    - name: appscode-cluster
+      name: appscode-cluster
       podTemplate:
         spec:
           containers:

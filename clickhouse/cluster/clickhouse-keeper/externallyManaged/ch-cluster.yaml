@@ -11,7 +11,7 @@ spec:
         host: clickhouse-keeper.click-keeper
         port: 2181
     cluster:
-    - name: arman
+      name: arman
       shards: 2
       replicas: 2
       podTemplate:
