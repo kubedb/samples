@@ -1,0 +1,17 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Qdrant
+metadata:
+  name: qdrant-sample-tls
+  namespace: demo
+spec:
+  version: 1.16.2
+  mode: Distributed
+  replicas: 3
+  tls:
+    issuerRef:
+      name: qdrant-ca-issuer
+      kind: Issuer
+      apiGroup: "cert-manager.io"
+    client: true
+    p2p: true
+  deletionPolicy: WipeOut

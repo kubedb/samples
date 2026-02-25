@@ -1,0 +1,9 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Qdrant
+metadata:
+  name: qdrant-sample-standalone
+  namespace: demo
+spec:
+  version: 1.16.2
+  mode: Standalone
+  deletionPolicy: WipeOut

@@ -1,0 +1,19 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Qdrant
+metadata:
+  name: qdrant-sample-monitoring
+  namespace: demo
+spec:
+  version: 1.16.2
+  mode: Distributed
+  replicas: 3
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 6333
+      serviceMonitor:
+        interval: 10s
+        labels:
+          release: prometheus
+  deletionPolicy: WipeOut
