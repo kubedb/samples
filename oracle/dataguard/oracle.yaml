@@ -8,6 +8,8 @@ spec:
     observer:
       podTemplate:
         spec:
+          imagePullSecrets:
+          - name: regcred
           containers:
           - name: observer
             resources:
@@ -55,6 +57,8 @@ spec:
           release: prometheus
   podTemplate:
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - name: oracle
         resources:

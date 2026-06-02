@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: regcred
+  namespace: demo
+type: kubernetes.io/dockerconfigjson
+stringData:
+  .dockerconfigjson: |
+    {
+      "auths": {
+        "container-registry.oracle.com": {
+          "username": "<your-oracle-account-email>",
+          "password": "<token-from-container-registry.oracle.com>",
+          "email": "<your-oracle-account-email>",
+          "auth": "<base64(username:password)>"
+        }
+      }
+    }
