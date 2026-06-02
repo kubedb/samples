@@ -5,9 +5,6 @@ metadata:
   namespace: demo
 spec:
   dataGuard:
-    applyLagThreshold: 0
-    fastStartFailover:
-      fastStartFailoverThreshold: 15
     observer:
       podTemplate:
         spec:
@@ -41,6 +38,21 @@ spec:
   deletionPolicy: Delete
   edition: enterprise
   mode: DataGuard
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9161
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+      serviceMonitor:
+        interval: 10s
+        labels:
+          release: prometheus
   podTemplate:
     spec:
       containers:
