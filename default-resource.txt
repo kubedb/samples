@@ -1,0 +1,71 @@
+Default main-container resources set in SetDefault() (from constants.go)
+========================================================================
+
+Resource constants (constants.go):
+  DefaultResources                         req: cpu 500m,  mem 1024Mi | lim: mem 1024Mi
+  ClickHouseDefaultResources               req: cpu 1,     mem 4Gi    | lim: mem 4Gi
+  IgniteDefaultResources                   req: cpu 500m,  mem 2Gi    | lim: mem 2Gi
+  DefaultResourcesCPUIntensiveMongoDBv6    req: cpu 800m,  mem 1024Mi | lim: mem 1024Mi
+  DefaultResourcesCPUIntensiveMongoDBv8    req: cpu 800m,  mem 1.5Gi  | lim: mem 1.5Gi
+  DefaultResourcesMemoryIntensive          req: cpu 500m,  mem 1.5Gi  | lim: mem 1.5Gi
+  DefaultResourcesMSSQLServer              req: cpu 1.5,   mem 2Gi    | lim: cpu 4, mem 4Gi   (limits: mem 4Gi, no cpu)
+  DefaultResourcesCoreAndMemoryIntensiveSolr   req: cpu 900m, mem 2Gi | lim: mem 2Gi
+  DefaultResourcesCoreAndMemoryIntensiveOracle req: cpu 2, mem 7Gi    | lim: cpu 4, mem 10Gi
+  DefaultResourcesMemoryIntensiveSDB       req: cpu 600m,  mem 2Gi    | lim: mem 2Gi
+  DefaultResourcesMemoryIntensiveDruid     req: cpu 500m,  mem 2.5Gi  | lim: mem 2.5Gi
+  DefaultResourcesHanaDB                   req: cpu 2,     mem 8Gi    | lim: cpu 4, mem 10Gi
+  DefaultResourcesNeo4j                    req: cpu 500m,  mem 2Gi    | lim: mem 2Gi
+
+--------------------------------------------------------------------------------
+Package v1 — main container default resource
+--------------------------------------------------------------------------------
+  MariaDB          DefaultResources
+  MySQL            DefaultResources
+  Memcached        DefaultResources
+  PerconaXtraDB    DefaultResources
+  ProxySQL         DefaultResources
+  Redis            DefaultResources
+  RedisSentinel    DefaultResources
+  PgBouncer        DefaultResourcesMemoryIntensive
+  Postgres         DefaultResources
+  Elasticsearch    DefaultResourcesMemoryIntensive
+  Kafka            DefaultResourcesMemoryIntensive
+  MongoDB          DefaultResources (default)
+                     -> DefaultResourcesCPUIntensiveMongoDBv8  (version >= 8)
+                     -> DefaultResourcesCPUIntensiveMongoDBv6  (version >= 6)
+                   (arbiter: DefaultArbiterMemoryIntensive v>=7, else DefaultArbiter(true))
+
+--------------------------------------------------------------------------------
+Package v1alpha2 — main container default resource
+--------------------------------------------------------------------------------
+  Aerospike        DefaultResources
+  Memcached        DefaultResources
+  Milvus           DefaultResources
+  RedisSentinel    DefaultResources
+  RabbitMQ         DefaultResources
+  MySQL            DefaultResources
+  PerconaXtraDB    DefaultResources
+  MariaDB          DefaultResources
+  Qdrant           DefaultResources
+  DocumentDB       DefaultResources
+  PgBouncer        DefaultResources
+  ProxySQL         DefaultResources
+  Redis            DefaultResources
+  Postgres         DefaultResources
+  Weaviate         DefaultResources
+  Pgpool           DefaultResources
+  ZooKeeper        DefaultResources
+  Cassandra        DefaultResourcesMemoryIntensive
+  Hazelcast        DefaultResourcesMemoryIntensive
+  MSSQLServer      DefaultResourcesMSSQLServer
+  Neo4j            DefaultResourcesNeo4j
+  ClickHouse       ClickHouseDefaultResources (keeper/main); DefaultResources for internal-zookeeper node
+  Ignite           IgniteDefaultResources
+  SingleStore      DefaultResourcesMemoryIntensiveSDB
+  HanaDB           DefaultResourcesHanaDB
+  Solr             DefaultResourcesCoreAndMemoryIntensiveSolr
+  Oracle           DefaultResourcesCoreAndMemoryIntensiveOracle
+                     (observer: DefaultResourcesCoreAndMemoryIntensiveOracleObserver)
+  Druid            DefaultResources
+                     -> DefaultResourcesMemoryIntensiveDruid  (MiddleManagers node)
+  Kafka            DefaultResources (Controller / Broker / combined)
