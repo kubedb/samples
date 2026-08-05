@@ -1,116 +1,112 @@
 # Milvus Deployment Guide
-This document describes the pre-requisites and deployment steps required to provision Milvus on Kubernetes using external object storage and Meta Storage.
-## Install External Object Storage (MinIO)
-Milvus requires an external object storage backend for storing indexes and data.
-We use MinIO as an S3-compatible storage.
 
-Apply the MinIO manifest.
+This sample shows how to deploy a standalone and distributed Milvus instance using KubeDB.
+
+## Before You Begin
+
+- Install KubeDB with Milvus feature gate enabled:
+  ```bash
+  helm install kubedb oci://ghcr.io/appscode-charts/kubedb \
+    --namespace kubedb --create-namespace \
+    --set global.featureGates.Milvus=true
+  ```
+
+- Create demo namespace:
+  ```bash
+  kubectl create namespace demo
+  ```
+
+## External Object Storage
+
+Milvus uses MinIO/S3 as object storage. Deploy a MinIO Tenant via the MinIO Operator:
+
+### 1. Install MinIO Operator
 ```bash
-kubectl apply -f minio.yaml
-````
-
-Verify MinIO resources:
-
-```bash
-kubectl get pods,svc,pvc -n demo
+helm repo add minio https://operator.min.io/
+helm repo update minio
+helm upgrade --install --namespace "minio-operator" --create-namespace "minio-operator" minio/operator --set operator.replicaCount=1
 ```
 
----
+### 2. Deploy MinIO Tenant
+```bash
+helm upgrade --install --namespace "demo" milvus-minio minio/tenant \
+  --set tenant.name=milvus-minio \
+  --set tenant.pools[0].servers=1 \
+  --set tenant.pools[0].volumesPerServer=1 \
+  --set tenant.pools[0].size=1Gi \
+  --set tenant.certificate.requestAutoCert=false \
+  --set tenant.buckets[0].name="mlv-release" \
+  --set tenant.pools[0].name="default"
+```
+
+### 3. Create Storage Config Secret
+Create a secret with MinIO connection details:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: milvus-storage-config
+  namespace: demo
+type: Opaque
+stringData:
+  address: "milvus-minio-hl.demo.svc.cluster.local"
+  accessKeyID: "minio"
+  secretAccessKey: "minio123"
+  bucketName: "mlv-release"
+  rootPath: "files"
+  port: "9000"
+```
+
+Apply it:
+```bash
+kubectl apply -f milvus-storage-config.yaml
+```
+
 ## Install Etcd Operator
-Milvus uses Etcd for metadata storage.
- 
-Clone Etcd Operator Repository
+
+Milvus uses etcd as its metadata store. Install the etcd operator:
 
 ```bash
-git clone https://github.com/etcd-io/etcd-operator
-cd etcd-operator
+kubectl apply -f https://raw.githubusercontent.com/etcd-io/etcd-operator/refs/heads/main/dist/install-v0.1.0.yaml
 ```
 
----
-
-Install Cert Manager (Required for Etcd Operator)
-
+Verify:
 ```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
+kubectl get deployment -n etcd-operator-system
+kubectl get crd etcdclusters.operator.etcd.io
 ```
 
----
+### Externally Managed etcd
 
-## Build and Deploy Etcd Operator
+Set `spec.metaStorage.externallyManaged: true` and provide your endpoints:
 
-Build and Push Etcd Operator Image
+```yaml
+metaStorage:
+  externallyManaged: true
+  endpoints:
+    - http://etcdcluster-sample-0.etcdcluster-sample.default.svc.cluster.local:2379
+    - http://etcdcluster-sample-1.etcdcluster-sample.default.svc.cluster.local:2379
+    - http://etcdcluster-sample-2.etcdcluster-sample.default.svc.cluster.local:2379
+```
 
+### Internally Managed etcd (default)
+
+Omit `spec.metaStorage` — KubeDB auto-provisions etcd.
+
+## Deployment
+
+### Standalone
 ```bash
-make docker-build docker-push IMG=<docker-registry>/etcd-operator:1.0.0
+kubectl apply -f standalone/milvus-standalone.yaml
 ```
 
-Install CRDs and RBAC
-
+### Distributed
 ```bash
-make install
+kubectl apply -f distributed/milvus-distributed.yaml
 ```
 
-Deploy Etcd Operator
-
-```bash
-make deploy IMG=<docker-registry>/etcd-operator:1.0.0
-```
-
----
-
-Verify Etcd Operator Installation
-
-```bash
-kubectl get all,cm,pvc,secrets,deploy -n etcd-operator-system
-```
-
----
-## Etcd Configuration Options
-
-Milvus supports two Etcd modes:
-### Externally Managed Etcd (`externallyManaged: true`)
-
-Create Etcd cluster:
-
-```bash
-kubectl apply -k config/samples/
-```
-
-Verify Etcd resources:
-
-```bash
-kubectl get all,cm,pvc,secrets,deploy
-```
-
-Add the generated Etcd service endpoints to the Milvus YAML.
-
----
-
-### Internally Managed Etcd (`externallyManaged: false`)
-
-No action required.
-
-Etcd will be automatically provisioned by KubeDB.
-
----
-
-## To Provision Milvus (Standalone)
-
-```bash
-kubectl apply -f milvus-standalone.yaml
-```
-
----
-
-## To Provision Milvus (Distributed)
-
-```bash
-kubectl apply -f milvus-distributed.yaml
-```
-
----
-
-## Verify Milvus Deployment
+## Verification
 
 ```bash
 kubectl get pods,svc,pvc -n demo
